@@ -30,4 +30,44 @@
          <lastmod>2024-05-08</lastmod>
          <changefreq>daily</changefreq>
     </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/usage/agents/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/usage/credentials/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/usage/database/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/usage/executing-tasks/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/usage/listeners/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/usage/navigating-files/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/usage/network-operations/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/usage/working-with-modules/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
 </urlset>

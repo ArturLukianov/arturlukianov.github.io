@@ -1,4 +1,5 @@
 site_name: semargl
+site_url: https://arturlukianov.github.io/semargl/
 theme:
   name: terminal
   palette: dark

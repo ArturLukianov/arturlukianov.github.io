@@ -1,3 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/getting-started/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/installation/ansible/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/installation/binary/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/installation/client/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
+    <url>
+         <loc>https://arturlukianov.github.io/semargl/installation/docker/</loc>
+         <lastmod>2024-05-08</lastmod>
+         <changefreq>daily</changefreq>
+    </url>
 </urlset>

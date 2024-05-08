@@ -1,4 +1,7 @@
-site_name: semargl C2
+site_name: semargl
 theme:
   name: terminal
   palette: dark
+  custom_dir: overrides
+plugins:
+  - search

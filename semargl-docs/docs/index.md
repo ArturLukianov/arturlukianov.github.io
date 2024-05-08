@@ -1,17 +1,10 @@
-# Welcome to MkDocs
 
-For full documentation visit [mkdocs.org](https://www.mkdocs.org).
+Semargl C2 is a versatile and powerful command-and-control (C2) framework tailored for red team operations. Developed in Golang and utilizing gRPC for efficient network communication, Semargl C2 offers a robust solution for managing complex attack simulations and security assessments.
 
-## Commands
+## Features
 
-* `mkdocs new [dir-name]` - Create a new project.
-* `mkdocs serve` - Start the live-reloading docs server.
-* `mkdocs build` - Build the documentation site.
-* `mkdocs -h` - Print help message and exit.
-
-## Project layout
-
-    mkdocs.yml    # The configuration file.
-    docs/
-        index.md  # The documentation homepage.
-        ...       # Other markdown pages, images and other files.
+- **Multi-Language Agents**: Includes agents written in Rust, C, and PowerShell, enabling seamless integration and execution across diverse environments.
+- **Flexible Communication**: Supports a wide range of protocols, ensuring reliable and covert communication with the C2 server.
+- **Docker Support**: Easily deployable using Docker, facilitating quick setup and scalability.
+- **Ansible Integration**: Comes with Ansible roles for streamlined deployment of server, client, and redirector components.
+- **MITRE ATT&CK Integration**: Generates reports aligned with MITRE ATT&CK techniques, enhancing the understanding of attack vectors and defensive tactics.

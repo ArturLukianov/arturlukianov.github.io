@@ -1,4 +1,4 @@
-[![asciicast](https://asciinema.org/a/capRkZFq81Il5QF0LMgqjvkEG.svg)](https://asciinema.org/a/capRkZFq81Il5QF0LMgqjvkEG)
+<script src="https://asciinema.org/a/capRkZFq81Il5QF0LMgqjvkEG.js" id="asciicast-capRkZFq81Il5QF0LMgqjvkEG" async="true"></script>
 
 # Creating a listener
 

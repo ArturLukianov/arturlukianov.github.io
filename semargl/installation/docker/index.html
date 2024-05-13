@@ -350,103 +350,7 @@ input {
         
             <a class="
 
-    terminal-mkdocs-side-nav-item" href="../../usage/credentials/">Credentials</a>
-        
-    
-    </li>
-            
-        
-            
-            
-
-             
-                <li class="terminal-mkdocs-side-nav-li-ul-li">
-    
-        
-        
-            <a class="
-
-    terminal-mkdocs-side-nav-item" href="../../usage/database/">Database</a>
-        
-    
-    </li>
-            
-        
-            
-            
-
-             
-                <li class="terminal-mkdocs-side-nav-li-ul-li">
-    
-        
-        
-            <a class="
-
-    terminal-mkdocs-side-nav-item" href="../../usage/executing-tasks/">Executing tasks</a>
-        
-    
-    </li>
-            
-        
-            
-            
-
-             
-                <li class="terminal-mkdocs-side-nav-li-ul-li">
-    
-        
-        
-            <a class="
-
     terminal-mkdocs-side-nav-item" href="../../usage/listeners/">Listeners</a>
-        
-    
-    </li>
-            
-        
-            
-            
-
-             
-                <li class="terminal-mkdocs-side-nav-li-ul-li">
-    
-        
-        
-            <a class="
-
-    terminal-mkdocs-side-nav-item" href="../../usage/navigating-files/">Navigating files</a>
-        
-    
-    </li>
-            
-        
-            
-            
-
-             
-                <li class="terminal-mkdocs-side-nav-li-ul-li">
-    
-        
-        
-            <a class="
-
-    terminal-mkdocs-side-nav-item" href="../../usage/network-operations/">Network operations</a>
-        
-    
-    </li>
-            
-        
-            
-            
-
-             
-                <li class="terminal-mkdocs-side-nav-li-ul-li">
-    
-        
-        
-            <a class="
-
-    terminal-mkdocs-side-nav-item" href="../../usage/working-with-modules/">Working with modules</a>
         
     
     </li>
@@ -460,9 +364,28 @@ input {
     </ul>
   
 </nav>
-
+<hr>
+<nav>
+    <ul>
+        <li><a href="#building-an-image">Building an image</a></li>
+        <li><a href="#running-a-docker-compose">Running a docker-compose</a></li>
+        
+    </ul>
+</nav>
 </aside>
             <main id="terminal-mkdocs-main-content">
+<section id="mkdocs-terminal-content">
+    <p><strong>semargl</strong> can be installed using Docker. However, some limitation should be considered. As we use <code>network: host</code> mode, not all protocols would be available. It is recommended to stick to TCP and HTTP(s) protocols.</p>
+<h1 id="building-an-image">Building an image</h1>
+<p>Image of <strong>semargl</strong> can be build using following commands:</p>
+<pre><code class="language-bash">docker build -t latest .
+</code></pre>
+<h1 id="running-a-docker-compose">Running a docker-compose</h1>
+<p>We provide a ready-to-use docker-compose file. You can simply run:</p>
+<pre><code class="language-bash">docker compose up -d
+</code></pre>
+</section>
+
             </main>
         </div>
         <hr><footer>

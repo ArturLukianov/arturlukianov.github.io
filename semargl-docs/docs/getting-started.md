@@ -6,3 +6,11 @@ To connect to server, simply run:
 ```bash
 semargl
 ```
+
+```
+    ________
+   /        \
+  /  O  O   /
+ / __  __  /
+/_/ /_/ /_/
+```

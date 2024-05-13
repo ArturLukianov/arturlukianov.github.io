@@ -2,72 +2,42 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
          <loc>https://arturlukianov.github.io/semargl/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://arturlukianov.github.io/semargl/getting-started/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://arturlukianov.github.io/semargl/installation/ansible/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://arturlukianov.github.io/semargl/installation/binary/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://arturlukianov.github.io/semargl/installation/client/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://arturlukianov.github.io/semargl/installation/docker/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://arturlukianov.github.io/semargl/usage/agents/</loc>
-         <lastmod>2024-05-08</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://arturlukianov.github.io/semargl/usage/credentials/</loc>
-         <lastmod>2024-05-08</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://arturlukianov.github.io/semargl/usage/database/</loc>
-         <lastmod>2024-05-08</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://arturlukianov.github.io/semargl/usage/executing-tasks/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
     <url>
          <loc>https://arturlukianov.github.io/semargl/usage/listeners/</loc>
-         <lastmod>2024-05-08</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://arturlukianov.github.io/semargl/usage/navigating-files/</loc>
-         <lastmod>2024-05-08</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://arturlukianov.github.io/semargl/usage/network-operations/</loc>
-         <lastmod>2024-05-08</lastmod>
-         <changefreq>daily</changefreq>
-    </url>
-    <url>
-         <loc>https://arturlukianov.github.io/semargl/usage/working-with-modules/</loc>
-         <lastmod>2024-05-08</lastmod>
+         <lastmod>2024-05-13</lastmod>
          <changefreq>daily</changefreq>
     </url>
 </urlset>

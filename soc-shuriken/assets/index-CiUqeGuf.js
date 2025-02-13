@@ -199,7 +199,7 @@ In order to be iterable, non-array objects must have a [Symbol.iterator]() metho
 `)}}},jM={name:"Base64 Decode",description:"Decode Base64 encoded string",category:"crypto",run:n=>{try{return{result:atob(n)}}catch{return{result:"",error:"Invalid Base64 input"}}}},LM={name:"Base64 Encode",description:"Encode Base64 encoded string",category:"crypto",run:n=>{try{return{result:btoa(n)}}catch{return{result:"",error:"Invalid Base64 input"}}}},HM={name:"Unique Lines",description:"Remove duplicate lines",category:"utility",run:n=>({result:[...new Set(n.split(`
 `))].join(`
 `)})},UM={name:"Duplicate Lines",description:"Show duplicate lines",category:"utility",run:n=>{const a=n.split(`
-`),r=new Map;for(const o of a)r.set(o,(r.get(o)||0)+1);return{result:a.filter(o=>r.get(o)>1).join(`
+`),r=new Map;for(const o of a)r.set(o,(r.get(o)||0)+1);return{result:[...new Set(a.filter(o=>r.get(o)>1))].join(`
 `)}}},BM={name:"Squash Spaces",description:"Remove extra spaces",category:"utility",run:n=>({result:n.replace(/\s+/g," ")})},kM={name:"Cut Field",description:"Cut a field from a line",category:"utility",options:[{type:"string",name:"Separator",default:" "},{type:"number",name:"Field",default:0}],run:(n,a)=>a===void 0?{result:""}:{result:n.split(`
 `).map(r=>r.split(a.Separator)[parseInt(a.Field)]).join(`
 `)}},qM={name:"Grep",description:"Grep for a pattern",category:"search",options:[{name:"Pattern",default:"",type:"string"}],run:(n,a)=>a===void 0?{result:""}:{result:n.split(`

